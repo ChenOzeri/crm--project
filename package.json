@@ -1,0 +1,16 @@
+{
+  "name": "project-lior",
+  "version": "1.0.0",
+  "description": "",
+  "main": "actionPage.js",
+  "dependencies": {
+    "chromedriver": "^77.0.0",
+    "selenium-webdriver": "^4.0.0-alpha.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
