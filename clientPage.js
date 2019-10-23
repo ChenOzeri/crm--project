@@ -5,22 +5,21 @@ class ClientsPage {
     async navigateToClientsPage() {
         await this.selenium.getURL("https://lh-crm.herokuapp.com/client")
     }
-    /*This method gets an input to search and the field to search by
-    searchBy can be: Name, Country, Email, Owner, Sold, EmailType
-    Return value: true if client exist, false otherwise
-    */
-    async searchAndValidateClient(input, searchBy) {
+    
+    // searchAndValidateClient searches client and validates if client was found.
+
+    async searchAndValidateClient(value, type) {
         try {
-            await this.selenium.write(input, "xpath", "//*[@id='root']/div/div[4]/div[1]/input")
-            await this.selenium.write(searchBy, "className", "select-css")
+            await this.selenium.write(value, "xpath", "//*[@id='root']/div/div[4]/div[1]/input")
+            await this.selenium.write(type, "className", "select-css")
             console.log("Searched client.")
-            let checkIfFound = await this.selenium.getTextFromElement("xpath", `//*[@id="root"]/div/div[4]/table/tr[2]/th[4]`);
-            console.log(checkIfFound)
-            if (checkIfFound == input) {
-                console.log(true + " Client was found.")
+            let checkEmail = await this.selenium.getTextFromElement("xpath", `//*[@id="root"]/div/div[4]/table/tr[2]/th[4]`);
+            console.log(checkEmail)
+            if (checkEmail == value) {
+                console.log(true + ", client was found.")
             }
             else {
-                console.log(false + " Client wasn't found.")
+                console.log(false + " client wasn't found.")
             }
 
 
@@ -29,30 +28,37 @@ class ClientsPage {
         }
     }
 
-    async updateClientInfo(inputForUpdate) {
+    // updateClientInfo clicks on the first client (div) on Client Page. since Email address should be unique, the result
+    // would most probably be just the one client we've searched. 
+
+    async updateClientInfo(inputNewEmail) {
         try {
             await this.selenium.clickElement("xpath", "//*[@id='root']/div/div[4]/table/tr[2]")
             await this.selenium.clearElementField("id", "email")
-            await this.selenium.write(inputForUpdate, "id", "email")
+            await this.selenium.write(inputNewEmail, "id", "email")
             await this.selenium.clickElement("xpath", "//*[@id='root']/div/div[4]/div[4]/div/div[2]/input[1]")
-            let checkIfFound = await this.selenium.getTextFromElement("xpath", "//*[@id='root']/div/div[4]/table/tr[2]/th[4]");
-            console.log(checkIfFound)
-            console.log(inputForUpdate)
-            let ifChanged = await this.selenium.isElementExists("css", ".success-pop-up")
-            console.log(ifChanged)
-            if (ifChanged = true) {
-                console.log(`Client's info is now updated.`)
+            let clientsEmail = await this.selenium.getTextFromElement("xpath", "//*[@id='root']/div/div[4]/table/tr[2]/th[4]");
+            console.log(clientsEmail) 
+            console.log(inputNewEmail)
+            let checkSuccessPU = await this.selenium.isElementExists("css", ".success-pop-up")
+            let checkErrorPU = await this.selenium.isElementExists("css", ".error-pop-up")
+            if (checkErrorPU) {
+                console.log("Error pop up. Client's info didn't updated.")
             }
-
+            else if (checkSuccessPU) {
+                console.log("Success pop up. Client's info is now updated.")
+            } 
             else {
-                console.log(false + `Client's info didn't updated.`)
+                console.log("No pop up.")
             }
 
         } catch (error) {
-            console.error(`Error with ${inputForUpdate} function "` + error)
+            console.error(`Error with inputForUpdate function "` + error)
 
         }
     }
+
+    // Search just searches for client.
 
     async search(inputForSearch, SearchByforSearch) {
         try {
@@ -60,28 +66,46 @@ class ClientsPage {
             await this.selenium.write(SearchByforSearch, "className", "select-css")
         }
         catch (error) {
-            console.error(`Error with ${this.search} function" ` + error)
+            console.error(`Error with search function" ` + error)
         }
     }
+
+    //soldOrNot get texts from clients tab and checks in the tab whether client was sold or not (YES/NO).
 
     async soldOrNot(){
         try {
-            let text = await this.selenium.getTextFromElement ("css", "#root > div > div.clients-component > table > tr:nth-child(2) > th:nth-child(6)")
+            let text = await this.selenium.getTextFromElement ("css", "#root > div > div.clients-component > table > tr.clientDetails > th:nth-child(6)")
             console.log (text)
+            if (text == "NO"){
+                console.log ("Client is NOT sold!")
+            }
+            else if (text == "YES"){
+                console.log ("Client is sold!")
+            }
         } catch (error) {
-            console.error (`Problem with ${this.getText} function ` +error)
+            console.error (`Problem with soldOrNot function ` +error)
         }
     }
 
+    //changeToSold inserting clients name and clicks on the "sold" button.
     async changeToSold(input) {
         try {
             await this.selenium.write(input, "xpath", `//*[@id="root"]/div/div[4]/div[1]/table/div/input`)
-            await this.selenium.clickElement("xpath", `//*[@id="root"]/div/div[4]/div[1]/table/table/tr[3]/th[2]/input`)
-            let checkSold = await this.selenium.getTextFromElement("css", ".success-pop-up") 
-            console.log(checkSold)
-
+            await this.selenium.clickElement("css", `#root > div > div.actions-container > div.update-container > table > table > tr.change-sold > th:nth-child(2) > input[type=button]`)
+            await this.selenium.sleep(2000)
+            let checkSuccessPU = await this.selenium.isElementExists("css", ".success-pop-up") 
+            let checkErrorPU = await this.selenium.isElementExists("css", ".error-pop-up")
+            if (checkErrorPU) {
+                console.log("Error pop up. Client is NOT sold.")
+            }
+            else if (checkSuccessPU) {
+                console.log("Success pop up. Client is now sold.")
+            } 
+            else {
+                console.log("No pop up.")
+            }
         } catch (error) {
-            console.error(`Error with ${this.changeToSold} function`)
+            console.error(`Error with changeToSold function`)
 
         }
     }

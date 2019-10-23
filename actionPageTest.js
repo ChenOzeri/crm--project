@@ -11,32 +11,37 @@ class ActionPageTest {
         this.HomePage = new HomePage (this.testSelenium)
     }
 
-    async negativeUpdateTest (){
+    async updateOwnerTest (name, owner){
         console.log ("Trying to navigate to Action page")
         await this.ActionPage.navigateToActionPage()
-        console.log ("Updating info for existing client and checking if changed.")
-        await this.ActionPage.updateInfo ("Chen Ozeri") // 1 - Negative Test - Should pop up error. 
+        console.log ("Updating info for existing client and checking what pop up pops.")
+        await this.ActionPage.updateInfo (name, owner) // 1 - Negative Test
         await this.ActionPage.closing()
 
     }
-    async addNewClientTest (){
+    async addNewClientTest (inputName, inputLastName, inputCountry, inputOwner, inputEmail){
         console.log ("Trying to navigate to Action page")
         await this.ActionPage.navigateToActionPage()
-        console.log ("Adding new client.")
-        await this.ActionPage.addNewClient ("Chen", "Ozeri1", "France", "Emily Durham", "chenfrance@gmail.com") // 2 - functionlity Test
+        console.log ("Adding new client and checking which pop up pops.")
+        await this.ActionPage.addNewClient (inputName, inputLastName, inputCountry, inputOwner, inputEmail) // 2 - functionlity Test
         await this.ActionPage.closing()
 
     }
     
-    async changeOwner (){
+    async changeOwner (inputName, inputOwner, inputSameName, value){
         console.log ("Opened Action page")
         await this.ActionPage.navigateToActionPage ()
         console.log ("Updating info for existing client and checking if changed.")
-        await this.ActionPage.updateInfo ("Chen Ozeri", "Leila Howe") // 3 - Functionality Test
+        await this.ActionPage.updateInfo (inputName, inputOwner) // 3 - Functionality Test
         console.log ("opened Clients page")
         await this.clientsPage.navigateToClientsPage ()
-        console.log ("search client on Clients, going to action to change owner and then validate.")
-        await this.ActionPage.searchClientAndChangeOwner ("Chen Ozeri", "Name")
+        console.log ("searching client, going to action to change owner and then validate.")
+        let changedValue = await this.ActionPage.searchClientAndValidateNewOwner (inputSameName, value)
+        if (changedValue === inputOwner) {
+            console.log("Success - the owner was changed ")
+        } else {
+            console.log("Error - the owner was NOT changed ")
+        }
         await this.ActionPage.closing()
     }
 
@@ -45,9 +50,9 @@ class ActionPageTest {
 let actionTest = new ActionPageTest();
 
 let testing = function (){
-    // actionTest.negativeUpdateTest()
-    actionTest.addNewClientTest()
-    // actionTest.changeOwner()
+    // actionTest.updateOwnerTest("Chen Ozeri", "Leila Howe")
+    // actionTest.addNewClientTest("Chen", "Ozeri1", "France", "Emily Durham", "chenfrance@gmail.com")
+    // actionTest.changeOwner("Chen Ozeri", "Leila Howe", "Chen Ozeri", "Name")
 }
 
 testing ()

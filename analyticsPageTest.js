@@ -21,20 +21,33 @@ class AnalyticsPageTest {
         await this.ActionPage.closing()
 
     }
-    async checkPieSalestest() {
+    async checkPieSalestest(country) {
         console.log("navigate to Analytics page")
         await this.AnalyticsPage.navigateToAnalyticsPage()
         console.log("choosing country and checking to see if pie chart appears")
-        await this.AnalyticsPage.checkEmployeeSales("Israel") // 2
+        await this.AnalyticsPage.checkEmployeeSales(country) // 2
         await this.ActionPage.closing()
 
     }
-    async sendEmailToClientTest() {
+    async sendEmailToClientTest(clientName, emailType) {
         console.log("Navigate to Analytics page")
         await this.AnalyticsPage.navigateToAnalyticsPage()
-        console.log("Changing the clients email type in Action and checking if it changed on Analytics.")
-        await this.AnalyticsPage.sendEmailtoClient("Chen Ozeri", "A") // 3
-        await this.ActionPage.closing()
+        console.log("Get sent email number")
+        let sentEmailNumber = await this.AnalyticsPage.getEmailNum()
+        console.log("Navigate to Action page")
+        await this.ActionPage.navigateToActionPage()
+        console.log("Changing the clients email type")
+        await this.AnalyticsPage.sendEmailToClients(clientName, emailType)
+        console.log("Navigate to Analytics page")
+        await this.AnalyticsPage.navigateToAnalyticsPage()
+        let newSentEmailNumber = await this.AnalyticsPage.getEmailNum()
+        if (sentEmailNumber + 1 == newSentEmailNumber) {
+            console.log(newSentEmailNumber>sentEmailNumber + ". Email sent.")
+        }
+        else {
+            console.log("Problem with sending Email.")
+        }
+        await this.AnalyticsPage.closing()
     }
 
 }
@@ -43,8 +56,8 @@ let analyticsPageTest = new AnalyticsPageTest();
 
 let testing = function () {
     // analyticsPageTest.StabilityTest()
-    // analyticsPageTest.checkPieSalestest()
-    analyticsPageTest.sendEmailToClientTest()
+    // analyticsPageTest.checkPieSalestest("Israel")
+    analyticsPageTest.sendEmailToClientTest("Chen Ozeri", "A")
 }
 
 testing()

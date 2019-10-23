@@ -9,38 +9,48 @@ class ClientsPageTest {
         this.clientsPage = new ClientsPage(this.testSelenium)
         this.ActionPage = new ActionPage(this.testSelenium)
         this.HomePage = new HomePage(this.testSelenium)
-        // if your test uses more pages, you will have to inisiate them here, in the constractor
-    }
-    async searchAndValidateClientTest() {
+        }
+
+    async searchAndValidateClientTest(input, value) {
         console.log("Trying to navigate to Clients page")
         await this.clientsPage.navigateToClientsPage()
         console.log("searching and validate client")
-        await this.clientsPage.searchAndValidateClient("chen@gmail.com", "Email") //1
+        await this.clientsPage.searchAndValidateClient(input, value) //1
         await this.clientsPage.closing()
 
 
     }
-    async updateClientInfoTest() {
+    async updateClientInfoTest(value, type, inputNewEmail, changedValue, sameType) {
         console.log("Trying to navigate to Clients page")
         await this.clientsPage.navigateToClientsPage()
         console.log("searching wanted client")
-        await this.clientsPage.search("chen@gmail.com", "Email")
+        await this.clientsPage.search(value, type) 
         console.log("updating client info")
-        await this.clientsPage.updateClientInfo("chenchange@gmail.com") //2 
+        await this.clientsPage.updateClientInfo(inputNewEmail) //2 
+        console.log("Trying to navigate to Clients page")
+        await this.clientsPage.navigateToClientsPage()
+        console.log ("validate client details changed")
+        await this.clientsPage.searchAndValidateClient(changedValue, sameType) 
         await this.clientsPage.closing()
 
     }
-    async changeToSoldTest() {
+    async changeToSoldTest(value, type, valueForChange, sameValue, sameType) {
         console.log("Trying to navigate to Clients page")
         await this.clientsPage.navigateToClientsPage() //3 
         console.log ("searching wanted client")
-        await this.clientsPage.search("Chen Ozeri1", "Name")
-        console.log ("searching if client sold or not - should be no")
+        await this.clientsPage.search(value, type)
+        console.log ("searching if client sold or not")
         await this.clientsPage.soldOrNot()
         console.log("Trying to navigate to Action page")
         await this.ActionPage.navigateToActionPage() 
         console.log("start changing client to sold")
-        await this.clientsPage.changeToSold("Chen Ozeri1")
+        await this.clientsPage.changeToSold(valueForChange)
+        console.log("navigate back to Clients page")
+        await this.clientsPage.navigateToClientsPage() 
+        console.log ("searching wanted client")
+        await this.clientsPage.search(sameValue, sameType)
+        console.log ("searching to validate if client sold or not")
+        await this.clientsPage.soldOrNot()
         await this.clientsPage.closing()
         // Implement the test here...
 
@@ -50,9 +60,9 @@ class ClientsPageTest {
 let clientPageTest = new ClientsPageTest();
 
 let testing = function () {
-    // clientPageTest.searchAndValidateClientTest();
-    // clientPageTest.updateClientInfoTest()
-    clientPageTest.changeToSoldTest()
+    // clientPageTest.searchAndValidateClientTest("chen@gmail.com", "Email");
+    // clientPageTest.updateClientInfoTest("chen@gmail.com", "Email", "chenchange@gmail.com", "chenchange@gmail.com", "Email")
+    clientPageTest.changeToSoldTest("Chen Ozeri1", "Name", "Chen Ozeri1", "Chen Ozeri1", "Name")
 }
 
 testing()
