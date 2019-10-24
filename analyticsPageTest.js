@@ -41,8 +41,10 @@ class AnalyticsPageTest {
         console.log("Navigate to Analytics page")
         await this.AnalyticsPage.navigateToAnalyticsPage()
         let newSentEmailNumber = await this.AnalyticsPage.getEmailNum()
+        sentEmailNumber= parseInt(sentEmailNumber)
+        newSentEmailNumber=parseInt(newSentEmailNumber)
         if (sentEmailNumber + 1 == newSentEmailNumber) {
-            console.log(newSentEmailNumber>sentEmailNumber + ". Email sent.")
+            console.log("Email sent.")
         }
         else {
             console.log("Problem with sending Email.")

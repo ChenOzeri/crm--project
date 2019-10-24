@@ -45,6 +45,7 @@ class AnalyticsPage {
             await this.selenium.sleep(3000)
             let currentNum =await this.selenium.getTextFromElement("css", "#root > div > div.analytics > div.badges > div:nth-child(2) > div.badge-val")
             console.log(currentNum)
+            return currentNum
         } catch (error) {
             console.error("Problem with getEmailNum function" + error)
             
